@@ -2,25 +2,30 @@
 
 import { useEffect, useState } from "react";
 import {
-  Bar,
-  BarChart,
-  Rectangle,
   ResponsiveContainer,
-  Tooltip,
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Rectangle,
   XAxis,
   YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  Sector,
 } from "recharts";
-import { getTrafficByVehicleType } from "../lib/api";
+import SegmentedControl from "./SegmentedControl";
 import { VehicleTypeTraffic } from "../types/traffic";
+import { getTrafficByVehicleType } from "../lib/api";
+import { scaleOrdinal } from "d3-scale";
+import { schemeSet2 } from "d3-scale-chromatic";
 
-const COLORS = [
-  "#2DD4BF",
-  "#F5A623",
-  "#FF6B4A",
-  "#7D8CFF",
-  "#C9D14B",
-  "#5B6472",
-];
+function getColorScale(names: string[]) {
+  return scaleOrdinal<string, string>().domain(names).range(schemeSet2);
+}
 
 export default function VehicleTypeChart() {
   const [trafficDataByVehicleType, setTrafficDataByVehicleType] = useState<
@@ -28,12 +33,19 @@ export default function VehicleTypeChart() {
   >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [chartType, setChartType] = useState<"bar" | "line" | "pie">("bar");
 
   useEffect(() => {
     async function loadData() {
       try {
         const data = await getTrafficByVehicleType();
-        setTrafficDataByVehicleType(data);
+        const colorScale = getColorScale(data.map((d) => d.name));
+        const withColors = data.map((entry) => ({
+          ...entry,
+          fill: colorScale(entry.name),
+        }));
+
+        setTrafficDataByVehicleType(withColors);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load data");
       } finally {
@@ -46,9 +58,10 @@ export default function VehicleTypeChart() {
 
   return (
     <div className="rounded-xl border p-5">
-      <h2 className="text-base font-medium mb-4 select-none cursor-default">
-        Vehicle type distribution
-      </h2>
+      <div className="flex items-start justify-between gap-3 flex-wrap mb-4">
+        <h2 className="text-base font-medium">Vehicle type distribution</h2>
+        <SegmentedControl value={chartType} onChange={setChartType} />
+      </div>
 
       {(isLoading || error) && (
         <div className="h-64 flex items-center justify-center text-sm text-gray-400">
@@ -59,45 +72,123 @@ export default function VehicleTypeChart() {
 
       {!isLoading && !error && (
         <ResponsiveContainer height={260} width="100%">
-          <BarChart
-            accessibilityLayer
-            data={trafficDataByVehicleType}
-            layout="horizontal"
-            barCategoryGap="10%"
-            barGap={4}
-            margin={{ top: 4, right: 8, bottom: 0, left: -12 }}
-          >
-            <XAxis
-              dataKey="name"
-              tick={{ fill: "#8A93A3", fontSize: 11 }}
-              axisLine={{ stroke: "#2A2F3A" }}
-              tickLine={false}
-            />
-            <YAxis
-              tick={{ fill: "#8A93A3", fontSize: 11 }}
-              axisLine={{ stroke: "#2A2F3A" }}
-              tickLine={false}
-            />
-            <Tooltip
-              contentStyle={{
-                background: "#20242E",
-                border: "1px solid #2A2F3A",
-                borderRadius: 8,
-              }}
-              labelStyle={{ color: "#EDEFF3" }}
-              itemStyle={{ color: "#8A93A3" }}
-            />
-            <Bar
-              dataKey="count"
-              radius={[6, 6, 0, 0]}
-              shape={(props: any) => (
-                <Rectangle
-                  {...props}
-                  fill={COLORS[props.index % COLORS.length]}
-                />
-              )}
-            />
-          </BarChart>
+          {chartType === "bar" ? (
+            <BarChart
+              accessibilityLayer
+              data={trafficDataByVehicleType}
+              layout="horizontal"
+              barCategoryGap="10%"
+              barGap={4}
+              margin={{ top: 4, right: 8, bottom: 0, left: -12 }}
+            >
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#2A2F3A"
+                vertical={false}
+              />
+              <XAxis
+                dataKey="name"
+                tick={{ fill: "#8A93A3", fontSize: 11 }}
+                axisLine={{ stroke: "#2A2F3A" }}
+                tickLine={false}
+              />
+              <YAxis
+                tick={{ fill: "#8A93A3", fontSize: 11 }}
+                axisLine={{ stroke: "#2A2F3A" }}
+                tickLine={false}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "#20242E",
+                  border: "1px solid #2A2F3A",
+                  borderRadius: 8,
+                }}
+                labelStyle={{ color: "#EDEFF3" }}
+                itemStyle={{ color: "#8A93A3" }}
+              />
+              <Bar
+                dataKey="count"
+                radius={[6, 6, 0, 0]}
+                shape={(props: any) => (
+                  <Rectangle {...props} fill={props.payload.fill} />
+                )}
+              />
+            </BarChart>
+          ) : chartType === "line" ? (
+            <LineChart
+              data={trafficDataByVehicleType}
+              margin={{ top: 4, right: 8, bottom: 0, left: -12 }}
+            >
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#2A2F3A"
+                vertical={false}
+              />
+              <XAxis
+                dataKey="name"
+                tick={{ fill: "#8A93A3", fontSize: 11 }}
+                axisLine={{ stroke: "#2A2F3A" }}
+                tickLine={false}
+              />
+              <YAxis
+                tick={{ fill: "#8A93A3", fontSize: 11 }}
+                axisLine={{ stroke: "#2A2F3A" }}
+                tickLine={false}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "#20242E",
+                  border: "1px solid #2A2F3A",
+                  borderRadius: 8,
+                }}
+                labelStyle={{ color: "#EDEFF3" }}
+                itemStyle={{ color: "#8A93A3" }}
+              />
+              <Line
+                type="monotone"
+                dataKey="count"
+                stroke="#F5A623"
+                strokeWidth={2}
+                dot={{ r: 3, fill: "#F5A623" }}
+              />
+            </LineChart>
+          ) : (
+            <PieChart>
+              <Tooltip
+                contentStyle={{
+                  background: "#20242E",
+                  border: "1px solid #2A2F3A",
+                  borderRadius: 8,
+                }}
+                labelStyle={{ color: "#EDEFF3" }}
+                itemStyle={{ color: "#8A93A3" }}
+              />
+              <Legend
+                {...({
+                  wrapperStyle: { fontSize: 11 },
+                  formatter: (value: string) => (
+                    <span style={{ color: "#FFFFFF" }}>{value}</span>
+                  ),
+                  payload: trafficDataByVehicleType.map((entry) => ({
+                    value: entry.name,
+                    type: "square",
+                    color: entry.fill,
+                  })),
+                } as any)}
+              />
+              <Pie
+                data={trafficDataByVehicleType}
+                dataKey="count"
+                nameKey="name"
+                innerRadius={50}
+                outerRadius={90}
+                paddingAngle={2}
+                shape={(props: any) => (
+                  <Sector {...props} fill={props.payload.fill} />
+                )}
+              />
+            </PieChart>
+          )}
         </ResponsiveContainer>
       )}
     </div>
