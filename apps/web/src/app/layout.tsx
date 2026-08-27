@@ -13,10 +13,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <div className="min-h-screen max-w-8xl mx-auto px-4 sm:px-6 py-8">
           <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-2xl sm:text-3xl mt-1 font-bold">
+              <h1 className="text-2xl sm:text-3xl mt-1 font-bold select-none cursor-default">
                 Traffic Dashboard
               </h1>
-              <p className="text-sm mt-1 text-textMuted">
+              <p className="text-sm mt-1 text-textMuted select-none cursor-default">
                 Country and vehicle activity across the network
               </p>
             </div>
