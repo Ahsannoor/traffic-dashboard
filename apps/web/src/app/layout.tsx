@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               </p>
             </div>
           </header>
-          <div className="w-full mb-6 border-t-2 border-dashed border-border" />
+          <div className="w-full mb-6 border-t-2 border-dashed border-border select-none cursor-default" />
           <main>{children}</main>
         </div>
       </body>
