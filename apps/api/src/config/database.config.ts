@@ -10,5 +10,7 @@ export function databaseConfig(): TypeOrmModuleOptions {
     database: process.env.POSTGRES_DB,
     autoLoadEntities: true,
     synchronize: false,
+    migrations: [__dirname + '/../migrations/*{.js,.ts}'],
+    migrationsRun: true,
   };
 }
