@@ -20,7 +20,7 @@ import { createKeyv } from '@keyv/redis';
         stores: [
           createKeyv(`redis://${process.env.REDIS_HOST ?? 'localhost'}:${process.env.REDIS_PORT ?? 6379}`),
         ],
-        ttl: 60 * 1000,
+        ttl: 30 * 1000,
       }),
     }),
     TrafficModule,
