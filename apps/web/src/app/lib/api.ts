@@ -4,7 +4,12 @@ import { CountryTraffic, TrafficQuery, VehicleTypeTraffic } from "../types/traff
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
 
 async function getTraffic<T>(endpoint: string, query?: TrafficQuery): Promise<T> {
-    const params = new URLSearchParams(query as Record<string, string>).toString();
+    const entries = Object.entries(query ?? {});
+    const validEntries = entries.filter(([key, value]) => {
+        return value !== undefined && value !== null && value !== "";
+    });
+    const params = new URLSearchParams(validEntries as [string, string][]);
+
     const res = await fetch(`${BASE_URL}/traffic/${endpoint}${params ? `?${params}` : ""}`, {
         cache: "no-store",
     });

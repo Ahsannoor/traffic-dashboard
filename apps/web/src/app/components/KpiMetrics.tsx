@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 import { CountryTraffic, VehicleTypeTraffic } from "../types/traffic";
 import { getTrafficByCountry, getTrafficByVehicleType } from "../lib/api";
 
-export default function KpiMetrics() {
+interface KpiMetricsProps {
+  from?: string;
+  to?: string;
+}
+
+export default function KpiMetrics({ from, to }: KpiMetricsProps) {
   const [countryData, setCountryData] = useState<CountryTraffic[]>([]);
   const [vehicleData, setVehicleData] = useState<VehicleTypeTraffic[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -14,8 +19,14 @@ export default function KpiMetrics() {
     async function loadData() {
       try {
         const [countries, vehicles] = await Promise.all([
-          getTrafficByCountry(),
-          getTrafficByVehicleType(),
+          getTrafficByCountry({
+            from: from || undefined,
+            to: to || undefined,
+          }),
+          getTrafficByVehicleType({
+            from: from || undefined,
+            to: to || undefined,
+          }),
         ]);
         setCountryData(countries);
         setVehicleData(vehicles);
@@ -27,7 +38,7 @@ export default function KpiMetrics() {
     }
 
     loadData();
-  }, []);
+  }, [from, to]);
 
   const totalVehicles = countryData.reduce((sum, c) => sum + c.vehicles, 0);
   const topCountry = countryData[0]?.name ?? "—";

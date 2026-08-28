@@ -27,7 +27,15 @@ function getColorScale(names: string[]) {
   return scaleOrdinal<string, string>().domain(names).range(schemeSet2);
 }
 
-export default function CountryTrafficChart() {
+interface CountryTrafficChartProps {
+  from?: string;
+  to?: string;
+}
+
+export default function CountryTrafficChart({
+  from,
+  to,
+}: CountryTrafficChartProps) {
   const [trafficDataByCountry, setTrafficDataByCountry] = useState<
     CountryTraffic[]
   >([]);
@@ -38,7 +46,10 @@ export default function CountryTrafficChart() {
   useEffect(() => {
     async function loadData() {
       try {
-        const data = await getTrafficByCountry();
+        const data = await getTrafficByCountry({
+          from: from || undefined,
+          to: to || undefined,
+        });
         const colorScale = getColorScale(data.map((d) => d.name));
         const withColors = data.map((entry) => ({
           ...entry,
@@ -54,7 +65,7 @@ export default function CountryTrafficChart() {
     }
 
     loadData();
-  }, []);
+  }, [from, to]);
 
   return (
     <div className="rounded-xl border p-5">

@@ -27,7 +27,15 @@ function getColorScale(names: string[]) {
   return scaleOrdinal<string, string>().domain(names).range(schemeSet2);
 }
 
-export default function VehicleTypeChart() {
+interface VehicleTrafficChartProps {
+  from?: string;
+  to?: string;
+}
+
+export default function VehicleTypeChart({
+  from,
+  to,
+}: VehicleTrafficChartProps) {
   const [trafficDataByVehicleType, setTrafficDataByVehicleType] = useState<
     VehicleTypeTraffic[]
   >([]);
@@ -38,7 +46,10 @@ export default function VehicleTypeChart() {
   useEffect(() => {
     async function loadData() {
       try {
-        const data = await getTrafficByVehicleType();
+        const data = await getTrafficByVehicleType({
+          from: from || undefined,
+          to: to || undefined,
+        });
         const colorScale = getColorScale(data.map((d) => d.name));
         const withColors = data.map((entry) => ({
           ...entry,
@@ -54,7 +65,7 @@ export default function VehicleTypeChart() {
     }
 
     loadData();
-  }, []);
+  }, [from, to]);
 
   return (
     <div className="rounded-xl border p-5">
