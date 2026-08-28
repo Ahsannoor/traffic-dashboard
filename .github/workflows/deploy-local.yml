@@ -14,13 +14,13 @@ jobs:
         working-directory: apps/api
         run: |
           docker compose down
-          docker compose -p traffic-dashboard-backend up up --build -d
+          docker compose -p traffic-dashboard-backend up --build -d
 
       - name: Rebuild and restart web
         working-directory: apps/web
         run: |
           docker compose down
-          docker compose -p traffic-dashboard-frontend up up --build -d
+          docker compose -p traffic-dashboard-frontend up --build -d
 
       - name: Verify API is responding
         run: |
