@@ -1,0 +1,14 @@
+export const ResponsiveContainer = ({ children }: any) => <div>{children}</div>;
+export const BarChart = ({ children }: any) => <div>{children}</div>;
+export const Bar = () => null;
+export const LineChart = ({ children }: any) => <div>{children}</div>;
+export const Line = () => null;
+export const PieChart = ({ children }: any) => <div>{children}</div>;
+export const Pie = () => null;
+export const Rectangle = () => null;
+export const Sector = () => null;
+export const XAxis = () => null;
+export const YAxis = () => null;
+export const CartesianGrid = () => null;
+export const Tooltip = () => null;
+export const Legend = () => null;
