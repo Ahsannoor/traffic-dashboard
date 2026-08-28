@@ -1,10 +1,12 @@
 import { TrafficService } from './traffic.service';
 import { TrafficRecord } from './entities/traffic-record.entity';
 import { Repository } from 'typeorm';
+import type { Cache } from 'cache-manager';
 
 describe('TrafficService', () => {
     let trafficService: TrafficService;
     let trafficRepo: Repository<TrafficRecord>;
+    let cache: jest.Mocked<Pick<Cache, 'get' | 'set'>>;
 
     const mockQueryBuilder = {
         select: jest.fn().mockReturnThis(),
@@ -18,7 +20,8 @@ describe('TrafficService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         trafficRepo = new Repository<TrafficRecord>(TrafficRecord, null as any);
-        trafficService = new TrafficService(trafficRepo);
+        cache = { get: jest.fn().mockResolvedValue(undefined), set: jest.fn().mockResolvedValue(undefined) };
+        trafficService = new TrafficService(trafficRepo, cache as unknown as Cache);
     });
 
     describe('byCountry', () => {

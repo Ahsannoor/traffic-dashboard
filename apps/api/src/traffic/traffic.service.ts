@@ -4,18 +4,28 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { TrafficRecord } from './entities/traffic-record.entity';
 import { TrafficQueryDto } from './dto/traffic-query.dto';
 import { CountryTraffic, VehicleTypeTraffic } from './dto/traffic-reponse.dto';
+import { Inject } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
 
 @Injectable()
+
 export class TrafficService {
     private readonly logger = new Logger(TrafficService.name);
 
     constructor(
         @InjectRepository(TrafficRecord)
         private readonly repo: Repository<TrafficRecord>,
+        @Inject(CACHE_MANAGER)
+        private readonly cache: Cache,
     ) { }
 
     async byCountry(query: TrafficQueryDto): Promise<CountryTraffic[]> {
         try {
+            const cacheKey = `traffic:by-country:${query.from ?? ''}:${query.to ?? ''}`;
+            const cached = await this.cache.get<CountryTraffic[]>(cacheKey);
+            if (cached) return cached;
+
             const qb = this.repo
                 .createQueryBuilder('t')
                 .select('t.country', 'name')
@@ -26,7 +36,10 @@ export class TrafficService {
             this.applyDateRange(qb, query);
 
             const rows = await qb.getRawMany<{ name: string; vehicles: string }>();
-            return rows.map((row) => ({ name: row.name, vehicles: Number(row.vehicles) }));
+            const result = rows.map((row) => ({ name: row.name, vehicles: Number(row.vehicles) }));
+
+            await this.cache.set(cacheKey, result);
+            return result;
         } catch (error) {
             this.logger.error('Failed to aggregate traffic by country', error);
             throw new InternalServerErrorException('Unable to load traffic data by country');
@@ -35,6 +48,10 @@ export class TrafficService {
 
     async byVehicleType(query: TrafficQueryDto): Promise<VehicleTypeTraffic[]> {
         try {
+            const cacheKey = `traffic:by-vehicle:${query.from ?? ''}:${query.to ?? ''}`;
+            const cached = await this.cache.get<VehicleTypeTraffic[]>(cacheKey);
+            if (cached) return cached;
+
             const qb = this.repo
                 .createQueryBuilder('t')
                 .select('t.vehicle_type', 'name')
@@ -45,7 +62,10 @@ export class TrafficService {
             this.applyDateRange(qb, query);
 
             const rows = await qb.getRawMany<{ name: string; count: string }>();
-            return rows.map((row) => ({ name: row.name, count: Number(row.count) }));
+            const result = rows.map((row) => ({ name: row.name, count: Number(row.count) }));
+
+            await this.cache.set(cacheKey, result);
+            return result
         } catch (error) {
             this.logger.error('Failed to aggregate traffic by vehicle type', error);
             throw new InternalServerErrorException('Unable to load traffic data by vehicle type');

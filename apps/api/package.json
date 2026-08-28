@@ -23,13 +23,14 @@
     "migration:run": "npm run typeorm -- migration:run -d src/data-source.ts"
   },
   "dependencies": {
+    "@keyv/redis": "^5.1.6",
+    "@nestjs/cache-manager": "^12.0.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.3",
     "cache-manager": "^7.2.9",
-    "cache-manager-redis-yet": "^5.1.5",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "dotenv": "^17.4.2",
@@ -73,6 +74,9 @@
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "^@nestjs/cache-manager$": "<rootDir>/../test/mocks/nestjs-cache-manager.ts"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
