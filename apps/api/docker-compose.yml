@@ -1,0 +1,14 @@
+services:
+  api:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_HOST: host.docker.internal
+      REDIS_HOST: host.docker.internal
+      PORT: ${PORT}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+    ports:
+      - "${PORT}:4000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
