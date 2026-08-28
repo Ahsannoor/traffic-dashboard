@@ -7,18 +7,16 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+    defaults:
+      run:
+        shell: powershell
     steps:
       - uses: actions/checkout@v4
 
-      - name: Write API .env
-        working-directory: apps/api
-        shell: bash
-        env:
-          API_ENV_FILE: ${{ secrets.API_ENV_FILE }}
-        run: printf '%s\n' "$API_ENV_FILE" > .env
-
       - name: Rebuild and restart API
         working-directory: apps/api
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         run: |
           docker compose -p traffic-dashboard-backend down
           docker compose -p traffic-dashboard-backend up --build -d
@@ -31,7 +29,16 @@ jobs:
 
       - name: Verify API is responding
         run: |
-          for i in {1..10}; do
-            curl -sf http://localhost:4000/traffic/by-country && break
-            sleep 3
-          done
+          $ErrorActionPreference = "Stop"
+          for ($i = 1; $i -le 10; $i++) {
+            try {
+              Invoke-RestMethod -Uri "http://localhost:4000/traffic/by-country" -TimeoutSec 5 | Out-Null
+              Write-Host "API responded on attempt $i"
+              exit 0
+            } catch {
+              Write-Host "Attempt $i failed: $($_.Exception.Message)"
+              Start-Sleep -Seconds 3
+            }
+          }
+          Write-Error "API did not respond after 10 attempts"
+          exit 1
