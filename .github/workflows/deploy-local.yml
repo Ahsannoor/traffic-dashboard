@@ -1,0 +1,30 @@
+name: Deploy Locally
+
+on:
+  push:
+    branches: [Production]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rebuild and restart API
+        working-directory: apps/api
+        run: |
+          docker compose down
+          docker compose up --build -d
+
+      - name: Rebuild and restart web
+        working-directory: apps/web
+        run: |
+          docker compose down
+          docker compose up --build -d
+
+      - name: Verify API is responding
+        run: |
+          for i in {1..10}; do
+            curl -sf http://localhost:4000/traffic/by-country && break
+            sleep 3
+          done
