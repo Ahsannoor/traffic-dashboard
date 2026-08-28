@@ -9,17 +9,21 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Keep untracked runtime files (e.g. apps/api/.env) that live on the
+          # self-hosted runner; the default checkout clean would delete them.
+          clean: false
 
       - name: Rebuild and restart API
         working-directory: apps/api
         run: |
-          docker compose down
+          docker compose -p traffic-dashboard-backend down
           docker compose -p traffic-dashboard-backend up --build -d
 
       - name: Rebuild and restart web
         working-directory: apps/web
         run: |
-          docker compose down
+          docker compose -p traffic-dashboard-frontend down
           docker compose -p traffic-dashboard-frontend up --build -d
 
       - name: Verify API is responding

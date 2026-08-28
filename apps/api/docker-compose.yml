@@ -7,6 +7,6 @@ services:
       POSTGRES_HOST: host.docker.internal
       REDIS_HOST: host.docker.internal
     ports:
-      - "${PORT}:${PORT}"
+      - "4000:4000"
     extra_hosts:
       - "host.docker.internal:host-gateway"
