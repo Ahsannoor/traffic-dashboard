@@ -9,10 +9,13 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
-        with:
-          # Keep untracked runtime files (e.g. apps/api/.env) that live on the
-          # self-hosted runner; the default checkout clean would delete them.
-          clean: false
+
+      - name: Write API .env
+        working-directory: apps/api
+        shell: bash
+        env:
+          API_ENV_FILE: ${{ secrets.API_ENV_FILE }}
+        run: printf '%s\n' "$API_ENV_FILE" > .env
 
       - name: Rebuild and restart API
         working-directory: apps/api
