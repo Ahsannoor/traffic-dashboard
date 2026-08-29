@@ -57,7 +57,7 @@ export class IngestionService {
     }
 
     private async updateVehicleTypeCache(records: CreateTrafficRecordDto[]) {
-        const cacheKey = 'traffic:by-vehicle-type::';
+        const cacheKey = 'traffic:by-vehicle::';
         const cached = await this.cache.get<VehicleTypeTraffic[]>(cacheKey);
         if (!cached) return;
 
