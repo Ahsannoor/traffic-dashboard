@@ -1,25 +1,35 @@
-import { CountryTraffic, TrafficQuery, VehicleTypeTraffic } from "../types/traffic";
+import {
+  CountryTraffic,
+  TrafficQuery,
+  VehicleTypeTraffic,
+} from "../types/traffic";
 
+const BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
+async function getTraffic<T>(
+  endpoint: string,
+  query?: TrafficQuery,
+): Promise<T> {
+  const entries = Object.entries(query ?? {});
+  const validEntries = entries.filter(([value]) => {
+    return value !== undefined && value !== null && value !== "";
+  });
+  const params = new URLSearchParams(validEntries as [string, string][]);
 
-async function getTraffic<T>(endpoint: string, query?: TrafficQuery): Promise<T> {
-    const entries = Object.entries(query ?? {});
-    const validEntries = entries.filter(([key, value]) => {
-        return value !== undefined && value !== null && value !== "";
-    });
-    const params = new URLSearchParams(validEntries as [string, string][]);
+  const res = await fetch(
+    `${BASE_URL}/traffic/${endpoint}${params ? `?${params}` : ""}`,
+    {
+      cache: "no-store",
+    },
+  );
 
-    const res = await fetch(`${BASE_URL}/traffic/${endpoint}${params ? `?${params}` : ""}`, {
-        cache: "no-store",
-    });
-
-    if (!res.ok) throw new Error(`Failed to load ${endpoint} (${res.status})`);
-    return res.json();
+  if (!res.ok) throw new Error(`Failed to load ${endpoint} (${res.status})`);
+  return res.json();
 }
 
 export const getTrafficByCountry = (query?: TrafficQuery) =>
-    getTraffic<CountryTraffic[]>("by-country", query);
+  getTraffic<CountryTraffic[]>("by-country", query);
 
 export const getTrafficByVehicleType = (query?: TrafficQuery) =>
-    getTraffic<VehicleTypeTraffic[]>("by-vehicle-type", query);
+  getTraffic<VehicleTypeTraffic[]>("by-vehicle-type", query);
