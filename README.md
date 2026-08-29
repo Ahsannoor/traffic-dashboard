@@ -22,6 +22,29 @@ It is a full-stack web application designed for displaying interactive traffic g
 
 ---
 
+## Architecture Overview
+
+### Backend - Nest JS
+
+The application on the backend side uses TypeOrm on top of PostgreSQL, the pending migrations run everytime the api is started, it has following modules. The application uses standalone Redis for cache purpose.
+
+**Traffic**
+
+- by-country
+  This endpoint returns data aggregated country wise, it checks if data is available in cache than returns from there
+  and if no data is available than it calls database, stores that data in cache and returns the data.
+
+- by-vehicle-type
+  This endpoint returns data aggregated vehicle type wise,it checks if data is available in cache than returns from there
+  and if no data is available than it calls database, stores that data in cache and returns the data.
+
+**Ingestion**
+
+- batch
+  This endpoint is used to ingest data into database, it also stores the new records for both coutry wise cache and vehicle wise cache.
+
+---
+
 ## Local Setup (Docker)
 
 ### Configure Environment Variables (Required for local development only)
