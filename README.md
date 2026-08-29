@@ -31,16 +31,19 @@ The application on the backend side uses TypeOrm on top of PostgreSQL, the pendi
 **Traffic**
 
 - by-country
+
   This endpoint returns data aggregated country wise, it checks if data is available in cache than returns from there
   and if no data is available than it calls database, stores that data in cache and returns the data.
 
 - by-vehicle-type
+
   This endpoint returns data aggregated vehicle type wise,it checks if data is available in cache than returns from there
   and if no data is available than it calls database, stores that data in cache and returns the data.
 
 **Ingestion**
 
 - batch
+
   This endpoint is used to ingest data into database, it also stores the new records for both coutry wise cache and vehicle wise cache.
 
 ### Frontend - Next JS
@@ -48,15 +51,19 @@ The application on the backend side uses TypeOrm on top of PostgreSQL, the pendi
 The application on the frontend side used app router. Uses built in fetch for calling the backend api's. The frontend has only one page that comprises of following components
 
 - Date Range filters
+
   This component has selectable date field for optional to and from fields. If not selected the api fetches all available data irrespective of the date.
 
 - KPI Metrics
+
   This is KPI strip that just shows summarises the figures for total vehicles tracked, top country and top vehicle based on the data available fetched.
 
 - Country-wise traffic chart
+
   This is country-wise traffic chart that displays chart for country wise data using Recharts, it also provides the capability to switch between bar, line or Pie chart. Initially it picking up colors from a fixed array of colors but later it was realised that number of countries can be way more than the colorset so switched to use d3 scale chromatic package for colors.
 
 - Vehicle-type-wise traffic chart
+
   This is vehicle-type-wise traffic chart that displays chart for vehicle type wise data using Recharts, it also provides the capability to switch between bar, line or Pie chart. Initially it picking up colors from a fixed array of colors but later it was realised that number of countries can be way more than the colorset so switched to use d3 scale chromatic package for colors.
 
 ---
