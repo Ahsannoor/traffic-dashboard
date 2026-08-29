@@ -26,7 +26,7 @@ It is a full-stack web application designed for displaying interactive traffic g
 
 ### Backend - Nest JS
 
-The application on the backend side uses TypeOrm on top of PostgreSQL, the pending migrations run everytime the api is started, it has following modules. The application uses standalone Redis for cache purpose.
+The application on the backend side uses TypeOrm on top of PostgreSQL and the application uses standalone Redis for cache purpose. The pending db migrations run everytime the api is started, it has following modules.
 
 **Traffic**
 
@@ -56,15 +56,15 @@ The application on the frontend side used app router. Uses built in fetch for ca
 
 - KPI Metrics
 
-  This is KPI strip that just shows summarises the figures for total vehicles tracked, top country and top vehicle based on the data available fetched.
+  This is KPI strip that just summarises the figures for total vehicles tracked, top country and top vehicle based on the data available fetched.
 
 - Country-wise traffic chart
 
-  This is country-wise traffic chart that displays chart for country wise data using Recharts, it also provides the capability to switch between bar, line or Pie chart. Initially it picking up colors from a fixed array of colors but later it was realised that number of countries can be way more than the colorset so switched to use d3 scale chromatic package for colors.
+  This is country-wise traffic chart that displays chart for country wise data using Recharts, it also provides the capability to switch between bar, line or Pie chart. Initially it was picking up colors from a fixed array of colors but later it was realised that number of countries can be way more than the colorset so switched to use d3 scale chromatic package for colors.
 
 - Vehicle-type-wise traffic chart
 
-  This is vehicle-type-wise traffic chart that displays chart for vehicle type wise data using Recharts, it also provides the capability to switch between bar, line or Pie chart. Initially it picking up colors from a fixed array of colors but later it was realised that number of countries can be way more than the colorset so switched to use d3 scale chromatic package for colors.
+  This is vehicle-type-wise traffic chart that displays chart for vehicle type wise data using Recharts, it also provides the capability to switch between bar, line or Pie chart. Initially it was picking up colors from a fixed array of colors but later it was realised that number of vehicle types can be way more than the colorset so switched to use d3 scale chromatic package for colors.
 
 ---
 
