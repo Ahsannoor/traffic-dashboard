@@ -9,7 +9,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CacheModule } from '@nestjs/cache-manager';
 import { createKeyv } from '@keyv/redis';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -18,7 +17,9 @@ import { createKeyv } from '@keyv/redis';
       isGlobal: true,
       useFactory: async () => ({
         stores: [
-          createKeyv(`redis://${process.env.REDIS_HOST ?? 'localhost'}:${process.env.REDIS_PORT ?? 6379}`),
+          createKeyv(
+            `redis://${process.env.REDIS_HOST ?? 'localhost'}:${process.env.REDIS_PORT ?? 6379}`,
+          ),
         ],
         ttl: 30 * 1000,
       }),
@@ -29,4 +30,4 @@ import { createKeyv } from '@keyv/redis';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

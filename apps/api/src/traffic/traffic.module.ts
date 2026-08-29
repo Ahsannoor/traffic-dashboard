@@ -11,4 +11,4 @@ import { TrafficRecord } from './entities/traffic-record.entity';
   providers: [TrafficService],
   exports: [TrafficService],
 })
-export class TrafficModule { }
+export class TrafficModule {}

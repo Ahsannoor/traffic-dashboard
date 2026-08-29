@@ -5,15 +5,17 @@ import { CountryTraffic, VehicleTypeTraffic } from './dto/traffic-reponse.dto';
 
 @Controller('traffic')
 export class TrafficController {
-    constructor(private readonly trafficService: TrafficService) { }
+  constructor(private readonly trafficService: TrafficService) {}
 
-    @Get('by-country')
-    byCountry(@Query() query: TrafficQueryDto): Promise<CountryTraffic[]> {
-        return this.trafficService.byCountry(query);
-    }
+  @Get('by-country')
+  byCountry(@Query() query: TrafficQueryDto): Promise<CountryTraffic[]> {
+    return this.trafficService.byCountry(query);
+  }
 
-    @Get('by-vehicle-type')
-    byVehicleType(@Query() query: TrafficQueryDto): Promise<VehicleTypeTraffic[]> {
-        return this.trafficService.byVehicleType(query);
-    }
+  @Get('by-vehicle-type')
+  byVehicleType(
+    @Query() query: TrafficQueryDto,
+  ): Promise<VehicleTypeTraffic[]> {
+    return this.trafficService.byVehicleType(query);
+  }
 }
