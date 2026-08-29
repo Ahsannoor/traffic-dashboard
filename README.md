@@ -2,7 +2,19 @@ Traffic Dashboard
 
 It is a full-stack web application designed for displaying interactive traffic graphs and it was built using Next.js on the frontend and NestJS on the backend.
 
-Prerequisites:
+**Backend uses**
+
+- TypeOrm that connects to PostgreSQL
+- Redis for Cache
+- Jest for testing
+
+**Frontend uses**
+
+- Recharts
+- D3 Scale Chromatic for random color generation for each country or Vehicle
+- Jest for testing
+
+**Prerequisites**
 
 - PostgreSQL
 - Redis
